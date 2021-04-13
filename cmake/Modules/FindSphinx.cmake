@@ -91,19 +91,10 @@ if(SPHINX_BUILD_EXECUTABLE AND SPHINX_QUICKSTART_EXECUTABLE)
   endif()
 endif()
 
-#
-# To verify the required Sphinx extensions are available, the right Python
-# installation must be queried (2 vs 3). Of course, this only makes sense on
-# UNIX-like systems.
-#
+
 if(NOT CMAKE_HOST_WIN32 AND SPHINX_BUILD_EXECUTABLE)
-  file(READ "${SPHINX_BUILD_EXECUTABLE}" _contents)
-  if(_contents MATCHES "^#!([^\n]+)")
-    string(STRIP "${CMAKE_MATCH_1}" _shebang)
-    if(EXISTS "${_shebang}")
-      set(_SPHINX_PYTHON_EXECUTABLE "${_shebang}")
-    endif()
-  endif()
+  find_package (Python REQUIRED COMPONENTS Interpreter Development)
+  set(_SPHINX_PYTHON_EXECUTABLE ${Python_EXECUTABLE})
 endif()
 
 foreach(_comp IN LISTS Sphinx_FIND_COMPONENTS)
