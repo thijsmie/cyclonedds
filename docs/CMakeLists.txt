@@ -34,7 +34,8 @@ if(BUILD_DOCS)
     docs
     BREATHE_PROJECTS ddsc_api_docs
     BUILDER html
-    SOURCE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/manual")
+    SOURCE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/manual"
+    CONFIG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/manual/conf.py.in")
   add_dependencies(docs schema)
 
   install(

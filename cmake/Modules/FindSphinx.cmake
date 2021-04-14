@@ -213,7 +213,7 @@ endfunction()
 
 function(sphinx_add_docs _target)
   set(_opts)
-  set(_single_opts BUILDER OUTPUT_DIRECTORY SOURCE_DIRECTORY)
+  set(_single_opts BUILDER OUTPUT_DIRECTORY SOURCE_DIRECTORY CONFIG_FILE)
   set(_multi_opts BREATHE_PROJECTS)
   cmake_parse_arguments(_args "${_opts}" "${_single_opts}" "${_multi_opts}" ${ARGN})
 
@@ -299,9 +299,33 @@ function(sphinx_add_docs _target)
 
   set(_cachedir "${CMAKE_CURRENT_BINARY_DIR}/${_target}.cache")
   file(MAKE_DIRECTORY "${_cachedir}")
-  file(MAKE_DIRECTORY "${_cachedir}/_static")
 
-  _Sphinx_generate_confpy(${_target} "${_cachedir}")
+  if(EXISTS "${_sourcedir}/_static" AND IS_DIRECTORY "${_sourcedir}/_static")
+    file(COPY "${_sourcedir}/_static" DESTINATION "${_cachedir}")
+  else()
+    file(MAKE_DIRECTORY "${_cachedir}/_static")
+  endif()
+
+  if(EXISTS "${_sourcedir}/_templates" AND IS_DIRECTORY "${_sourcedir}/_templates")
+    file(COPY "${_sourcedir}/_templates" DESTINATION "${_cachedir}")
+  else()
+    file(MAKE_DIRECTORY "${_cachedir}/_templates")
+  endif()
+
+  if(NOT _args_CONFIG_FILE)
+    _Sphinx_generate_confpy(${_target} "${_cachedir}")
+  else()
+    if(IS_ABSOLUTE "${_args_CONFIG_FILE}")
+      set(_config_file "${_args_CONFIG_FILE}")
+    else()
+      set(_config_file "${_sourcedir}/${_args_CONFIG_FILE}")
+    endif()
+    if(NOT EXISTS "${_args_CONFIG_FILE}")
+      message(FATAL_ERROR "Config file specified but ${_args_CONFIG_FILE} does not"
+                        "exist")
+    endif()
+    configure_file("${_config_file}" "${_cachedir}/conf.py")
+  endif()
 
   if(_breathe_projects)
     file(APPEND "${_cachedir}/conf.py"
