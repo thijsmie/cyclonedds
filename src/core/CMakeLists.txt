@@ -77,5 +77,5 @@ if(BUILD_DOCS)
     "DDS_DEPRECATED_EXPORT="
     "DDSRT_STATIC_ASSERT(x)=")
   find_package(Doxygen REQUIRED)
-  doxygen_add_docs(ddsc_api_docs "ddsc/include")
+  doxygen_add_docs(ddsc_api_docs "ddsc/include/dds")
 endif()
