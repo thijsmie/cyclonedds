@@ -299,14 +299,14 @@ function(sphinx_add_docs _target)
 
         file(MAKE_DIRECTORY "${_sourcedir}/${_name}")
         execute_process(
-          COMMAND "breathe-apidoc"
+          COMMAND "${_SPHINX_PYTHON_EXECUTABLE}"
+                    -m "breathe.apidoc"
                     -q
                     -o "${_sourcedir}/${_name}"
                     -p "${_name}"
                     --force
                     ${_dir}
-          RESULT_VARIABLE _result
-          OUTPUT_QUIET)
+          RESULT_VARIABLE _result)
 
       endif()
     endforeach()
