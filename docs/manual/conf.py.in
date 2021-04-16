@@ -14,9 +14,10 @@ release = '@PROJECT_VERSION@'
 # -- General configuration ---------------------------------------------------
 
 extensions = [
-    'breathe',
-    'sphinx.ext.intersphinx',
+    "breathe",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
+    "sphinx.ext.autosummary"
 ]
 
 templates_path = ['_templates']
@@ -37,8 +38,4 @@ except ImportError:
 
 
 html_static_path = ['_static']
-
-
-# -- Extension configuration -------------------------------------------------
-breathe_projects = { "ddsc_api_docs": "/mnt/m/Libraries/Projects/CyclonePlayground/cyclonedds-fork/build/src/core/xml" }
-breathe_default_project = 'ddsc_api_docs'
+autosummary_generate=True

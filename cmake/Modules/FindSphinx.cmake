@@ -293,6 +293,21 @@ function(sphinx_add_docs _target)
         if(NOT _breathe_default_project)
           set(_breathe_default_project "${_name}")
         endif()
+
+        # Use breathe-apidoc (in the wrong way, write to sourcedir)
+        # Note, also not confirming if breathe-apidoc is available, TODO
+
+        file(MAKE_DIRECTORY "${_sourcedir}/${_name}")
+        execute_process(
+          COMMAND "breathe-apidoc"
+                    -q
+                    -o "${_sourcedir}/${_name}"
+                    -p "${_name}"
+                    --force
+                    ${_dir}
+          RESULT_VARIABLE _result
+          OUTPUT_QUIET)
+
       endif()
     endforeach()
   endif()
