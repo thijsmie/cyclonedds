@@ -293,21 +293,6 @@ function(sphinx_add_docs _target)
         if(NOT _breathe_default_project)
           set(_breathe_default_project "${_name}")
         endif()
-
-        # Use breathe-apidoc (in the wrong way, write to sourcedir)
-
-        file(MAKE_DIRECTORY "${_sourcedir}/${_name}")
-        add_custom_target(
-          "${_target}_breathe_${_name}" ALL
-          COMMAND "${_SPHINX_PYTHON_EXECUTABLE}"
-                    -m "breathe.apidoc"
-                    -q
-                    -o "${_sourcedir}/${_name}"
-                    -p "${_name}"
-                    --force
-                    ${_dir}
-          DEPENDS ${_doxygen_target})
-          list(APPEND _depends "${_target}_breathe_${_name}")
       endif()
     endforeach()
   endif()

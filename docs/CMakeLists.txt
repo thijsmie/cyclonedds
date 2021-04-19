@@ -10,13 +10,15 @@
 # SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
 #
 
+include(GenerateVenv)
+
 # although the following files are generated, they are checked into source
 # control for convenience, but the user must copy them manually
 set(cyclonedds_rnc "${CMAKE_CURRENT_BINARY_DIR}/cyclonedds.rnc")
 set(cyclonedds_xsd "${CMAKE_CURRENT_BINARY_DIR}/cyclonedds.xsd")
 set(options_md "${CMAKE_CURRENT_BINARY_DIR}/manual/options.md")
 
-if(BUILD_SCHEMA OR BUILD_DOCS)
+if(BUILD_SCHEMA)
   add_custom_command(
     OUTPUT "${cyclonedds_rnc}" "${cyclonedds_xsd}" "${options_md}"
     COMMAND ddsconf ARGS -f rnc -o "${cyclonedds_rnc}"
@@ -29,14 +31,21 @@ if(BUILD_SCHEMA OR BUILD_DOCS)
 endif()
 
 if(BUILD_DOCS)
-  find_package(Sphinx REQUIRED breathe)
-  sphinx_add_docs(
-    docs
-    BREATHE_PROJECTS ddsc_api_docs
-    BUILDER html
-    SOURCE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/manual"
-    CONFIG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/manual/conf.py.in")
-  add_dependencies(docs schema)
+  python3_use_venv(pydocs "${CMAKE_CURRENT_BINARY_DIR}/venv")
+  python3_ensure_package(sphinx)
+  python3_ensure_package(breathe)
+  python3_ensure_package(exhale)
+  python3_ensure_package(sphinx-rtd-theme)
+
+  add_custom_target(build_the_docs ALL
+    COMMAND ${Python3_EXECUTABLE}
+    -m sphinx
+    "${CMAKE_CURRENT_SOURCE_DIR}/manual"
+    "${CMAKE_CURRENT_BINARY_DIR}/docs"
+    DEPENDS
+    "${CMAKE_SOURCE_DIR}/src/core/ddsc/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/manual"
+  )
 
   install(
     DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/docs"

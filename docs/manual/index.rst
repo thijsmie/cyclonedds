@@ -19,7 +19,7 @@ Welcome to Eclipse Cyclone DDS's documentation!
    :caption: Contents
 
    GettingStartedGuide/index
-   ddsc
+   api/library_root
    config
    security
 
